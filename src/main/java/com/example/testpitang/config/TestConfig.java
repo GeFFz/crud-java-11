@@ -10,10 +10,12 @@ import org.springframework.context.annotation.Profile;
 
 import com.example.testpitang.entities.Category;
 import com.example.testpitang.entities.Order;
+import com.example.testpitang.entities.OrderItem;
 import com.example.testpitang.entities.Product;
 import com.example.testpitang.entities.User;
 import com.example.testpitang.entities.enums.OrderStatus;
 import com.example.testpitang.repositories.CategoryRepository;
+import com.example.testpitang.repositories.OrderItemRepository;
 import com.example.testpitang.repositories.OrderRepository;
 import com.example.testpitang.repositories.ProductRepository;
 import com.example.testpitang.repositories.UserRepository;
@@ -21,7 +23,6 @@ import com.example.testpitang.repositories.UserRepository;
 @Configuration
 @Profile("test")
 public class TestConfig implements CommandLineRunner {
-	
 	
 	@Autowired 
 	private UserRepository userRepository;
@@ -34,6 +35,9 @@ public class TestConfig implements CommandLineRunner {
 	
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private OrderItemRepository orderItemRepository;
 	
 	@Override
 	public void run(String... args) throws Exception {
@@ -51,6 +55,15 @@ public class TestConfig implements CommandLineRunner {
 		categoryRepository.saveAll(Arrays.asList(cat1, cat2, cat3));
 		productRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
 		
+		p1.getCategories().add(cat2);
+		p1.getCategories().add(cat1);
+		p1.getCategories().add(cat3);
+		p2.getCategories().add(cat1);
+		p3.getCategories().add(cat3);
+		p4.getCategories().add(cat1);
+		p4.getCategories().add(cat3);		
+		p5.getCategories().add(cat3);
+		productRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5));		
 		
 		User u1 = new User(null, "Kelly Key", "kelly@gmail.com", "988888888", "BarbieGirl");
 		User u2 = new User(null, "Christian Grey", "chris@gmail.com", "977777777", "123456");
@@ -62,10 +75,13 @@ public class TestConfig implements CommandLineRunner {
 		userRepository.saveAll(Arrays.asList(u1,u2));
 		orderRepository.saveAll(Arrays.asList(o1,o2, o3));
 		
+		OrderItem oi1 = new OrderItem(o1, p1, 2, p1.getPrice());
+		OrderItem oi2 = new OrderItem(o1, p3, 1, p3.getPrice());
+		OrderItem oi3 = new OrderItem(o2, p3, 4, p3.getPrice());
+		OrderItem oi4 = new OrderItem(o3, p5, 7, p5.getPrice()); 
+		orderItemRepository.saveAll(Arrays.asList(oi1,oi2,oi3,oi4));
+		
+		
 	}
-
-	
-	
-	
 	
 }
